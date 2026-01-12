@@ -1,0 +1,100 @@
+@import "tailwindcss";
+
+@theme {
+  --animate-kenburns: kenburns 20s infinite alternate;
+  --animate-fade-in-up: fadeInUp 0.8s ease-out forwards;
+
+  @keyframes kenburns {
+    0% {
+      transform: scale(1);
+    }
+
+    100% {
+      transform: scale(1.15);
+    }
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  --animate-marquee: marquee 25s linear infinite;
+
+  @keyframes marquee {
+    0% {
+      transform: translateX(100%);
+    }
+
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+
+  /* Faster animation (1s) and change border color to transparent at 100% to remove cursor */
+  --animate-typewriter: typewriter 1s steps(20) forwards;
+
+  @keyframes typewriter {
+    from {
+      width: 0;
+      border-right-color: rgba(34, 211, 238, 1);
+      /* cyan-400 equivalent for visibility during typing */
+    }
+
+    to {
+      width: 100%;
+      border-right-color: transparent;
+    }
+  }
+
+  /* Blinking cursor effect (optional) */
+  --animate-blink: blink 0.8s step-end infinite;
+
+  @keyframes blink {
+    50% {
+      border-color: transparent;
+    }
+  }
+
+  @keyframes highlight {
+    to {
+      background-color: rgba(6, 182, 212, 0.2);
+      /* cyan-500/20 */
+      border-color: rgba(6, 182, 212, 0.5);
+      /* cyan-500/50 */
+    }
+  }
+}
+
+:root {
+  scroll-behavior: smooth;
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #ffffff;
+    /* Force light mode initially based on prototype style, or respect dark? Prototype had mixed. Let's keep variables but maybe override */
+    /* Prototype used bg-gray-900 for Hero and Footer, white for others. It wasn't full dark mode. */
+    /* Let's stick to system preference but ensure text colors are handled by classes, OR force light mode defaults if design dictates. 
+        The prototype seemed to have specific dark sections (Hero, Footer) and light sections (Services, Reviews).
+        So I shouldn't flip everything freely. I will keep variables but rely on utility classes for specific sections.
+     */
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
