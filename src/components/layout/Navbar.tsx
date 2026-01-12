@@ -2,9 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ShoppingCart, Menu, X } from "lucide-react";
-
-import CartDrawer from "./CartDrawer";
+import { Menu, X } from "lucide-react";
 
 interface NavbarProps {
     cartCount?: number; // Kept for interface compatibility but Navbar uses context internally now or prop can be removed
@@ -13,7 +11,6 @@ interface NavbarProps {
 export default function Navbar({ cartCount: propCount }: NavbarProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
-    const [isCartOpen, setIsCartOpen] = useState(false);
 
     useEffect(() => {
         const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -37,12 +34,12 @@ export default function Navbar({ cartCount: propCount }: NavbarProps) {
                         {/* Contenedor aún más ancho para soportar el tamaño masivo */}
                         <div className="relative w-[200px] md:w-[280px] h-10 md:h-12 flex items-center">
                             <img
-                                src="/images/logo.png"
+                                src="/images/logo.svg"
                                 alt="Bigo Bike's Logo"
                                 className={`absolute left-0 w-auto max-w-none object-contain transition-all duration-500 ease-in-out z-50 origin-left
                                     ${scrolled
-                                        ? "-top-3 h-20 md:h-28 drop-shadow-md" /* Scrolled: Sube un poco más */
-                                        : "-top-5 h-32 md:h-48 filter-none" /* Transparent: MASIVO */
+                                        ? "top-1 h-10 md:h-12 drop-shadow-md"
+                                        : "top-0 h-12 md:h-16 filter-none"
                                     } 
                                     group-hover:scale-105
                                 `}
@@ -57,50 +54,38 @@ export default function Navbar({ cartCount: propCount }: NavbarProps) {
                         <Link href="#agenda" className={navLinkClass}>Agendar</Link>
                         <Link href="#contacto" className={navLinkClass}>Contacto</Link>
 
-                        <div
-                            className="relative cursor-pointer group"
-                            onClick={() => setIsCartOpen(true)}
-                        >
-                            <div className={`p-2 rounded-full transition-colors ${scrolled ? "bg-gray-100 hover:bg-gray-200 text-gray-900" : "bg-white/10 hover:bg-white/20 text-white"}`}>
-                                <ShoppingCart className="w-5 h-5" />
-                            </div>
-                            {propCount !== undefined && propCount > 0 && (
-                                <span className="absolute -top-1 -right-1 bg-cyan-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-white shadow-sm">
-                                    {propCount}
-                                </span>
-                            )}
-                        </div>
                     </div>
 
                     {/* Mobile Toggle */}
                     <div className="md:hidden flex items-center gap-4">
-                        <div className="relative cursor-pointer" onClick={() => setIsCartOpen(true)}>
-                            <ShoppingCart className={`w-6 h-6 ${scrolled ? "text-gray-900" : "text-white"}`} />
-                            {propCount !== undefined && propCount > 0 && (
-                                <span className="absolute -top-2 -right-2 bg-cyan-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">
-                                    {propCount}
-                                </span>
-                            )}
-                        </div>
+
                         <button onClick={() => setIsOpen(!isOpen)} className={scrolled ? "text-gray-900" : "text-white"}>
                             {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
                         </button>
                     </div>
                 </div>
 
-                {/* Mobile Menu */}
+                {/* Mobile Menu Overlay */}
                 {isOpen && (
-                    <div className="md:hidden bg-white/95 backdrop-blur-xl absolute top-full w-full shadow-2xl border-t border-gray-100 animate-fade-in-up">
-                        <div className="flex flex-col p-8 space-y-6 font-bold text-xl text-gray-800 text-center">
-                            <Link href="#inicio" onClick={() => setIsOpen(false)} className="hover:text-cyan-500 transition-colors">Inicio</Link>
-                            <Link href="#servicios" onClick={() => setIsOpen(false)} className="hover:text-cyan-500 transition-colors">Servicios</Link>
-                            <Link href="#agenda" onClick={() => setIsOpen(false)} className="hover:text-cyan-500 transition-colors">Agendar</Link>
-                            <Link href="#contacto" onClick={() => setIsOpen(false)} className="hover:text-cyan-500 transition-colors">Contacto</Link>
+                    <div className="fixed inset-0 z-[60] bg-gray-900/98 backdrop-blur-xl flex flex-col items-center justify-center animate-fade-in text-white">
+                        {/* Close Button */}
+                        <button
+                            onClick={() => setIsOpen(false)}
+                            className="absolute top-8 right-6 p-2 text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-all"
+                        >
+                            <X className="w-10 h-10" />
+                        </button>
+
+                        <div className="flex flex-col space-y-10 font-bold text-4xl text-center tracking-tight">
+                            <Link href="#inicio" onClick={() => setIsOpen(false)} className="hover:text-cyan-400 hover:scale-110 transition-all duration-300">Inicio</Link>
+                            <Link href="#servicios" onClick={() => setIsOpen(false)} className="hover:text-cyan-400 hover:scale-110 transition-all duration-300">Servicios</Link>
+                            <Link href="#agenda" onClick={() => setIsOpen(false)} className="hover:text-cyan-400 hover:scale-110 transition-all duration-300">Agendar</Link>
+                            <Link href="#contacto" onClick={() => setIsOpen(false)} className="hover:text-cyan-400 hover:scale-110 transition-all duration-300">Contacto</Link>
                         </div>
                     </div>
                 )}
             </nav>
-            <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+
         </>
     );
 }

@@ -1,15 +1,45 @@
 "use client";
 
-import { Star, Clock, MapPin, CheckCircle } from "lucide-react";
-import { useState } from "react";
+import { Star, ChevronLeft, ChevronRight, Clock, MapPin, CheckCircle } from "lucide-react";
+import { useState, useEffect } from "react";
 
 const REVIEWS = [
     { name: "Juan Pérez", text: "Excelente servicio, mi bicicleta quedó como nueva. El retiro a domicilio es lo mejor.", rating: 5 },
     { name: "María González", text: "Muy profesionales con las suspensiones. Se nota que saben lo que hacen. 100% recomendados en La Serena.", rating: 5 },
     { name: "Carlos Tapia", text: "Rápidos y confiables. Me salvaron el fin de semana.", rating: 4 },
+    { name: "Andrea Munizaga", text: "La atención por WhatsApp fue inmediata y el servicio técnico impecable. Volveré.", rating: 5 },
+    { name: "Roberto Diaz", text: "Gran variedad de repuestos y muy buena mano para la mecánica.", rating: 5 },
+    { name: "Fernanda Castillo", text: "Me encantó que retiraran la bici en mi casa. Servicio muy cómodo.", rating: 5 }
 ];
 
 export function Reviews() {
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [itemsPerPage, setItemsPerPage] = useState(1);
+
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth >= 768) {
+                setItemsPerPage(3);
+            } else {
+                setItemsPerPage(1);
+            }
+        };
+
+        // Initial check
+        handleResize();
+
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
+    const nextSlide = () => {
+        setCurrentIndex((prev) => (prev + 1) % (REVIEWS.length - itemsPerPage + 1));
+    };
+
+    const prevSlide = () => {
+        setCurrentIndex((prev) => (prev === 0 ? REVIEWS.length - itemsPerPage : prev - 1));
+    };
+
     return (
         <section className="py-16 bg-white border-b">
             <div className="container mx-auto px-6 text-center">
@@ -19,16 +49,64 @@ export function Reviews() {
                     </span>
                 </div>
                 <h2 className="text-3xl font-bold text-gray-900 mb-10">Lo que dicen nuestros riders</h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    {REVIEWS.map((review, idx) => (
-                        <div key={idx} className="bg-gray-50 p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow border border-gray-100">
-                            <div className="flex justify-center text-yellow-400 mb-4">
-                                {[...Array(review.rating)].map((_, i) => <Star key={i} fill="currentColor" className="w-5 h-5" />)}
-                            </div>
-                            <p className="text-gray-600 italic mb-4">"{review.text}"</p>
-                            <h4 className="font-bold text-gray-900">- {review.name}</h4>
+
+                <div className="relative max-w-6xl mx-auto">
+                    {/* Controls */}
+                    <button
+                        onClick={prevSlide}
+                        className="absolute left-0 top-1/2 -translate-y-1/2 -ml-4 md:-ml-12 z-10 bg-white p-2 rounded-full shadow-lg border border-gray-100 text-gray-700 hover:text-cyan-500 hover:scale-110 transition-all"
+                    >
+                        <ChevronLeft className="w-6 h-6" />
+                    </button>
+                    <button
+                        onClick={nextSlide}
+                        className="absolute right-0 top-1/2 -translate-y-1/2 -mr-4 md:-mr-12 z-10 bg-white p-2 rounded-full shadow-lg border border-gray-100 text-gray-700 hover:text-cyan-500 hover:scale-110 transition-all"
+                    >
+                        <ChevronRight className="w-6 h-6" />
+                    </button>
+
+                    {/* Carousel Viewport */}
+                    <div className="overflow-hidden px-2">
+                        <div
+                            className="flex transition-transform duration-500 ease-out"
+                            style={{ transform: `translateX(-${currentIndex * (100 / itemsPerPage)}%)` }}
+                        >
+                            {REVIEWS.map((review, idx) => (
+                                <div
+                                    key={idx}
+                                    className="flex-shrink-0 px-4 mb-4"
+                                    style={{ width: `${100 / itemsPerPage}%` }}
+                                >
+                                    <div className="bg-gray-50 p-8 rounded-2xl shadow-sm hover:shadow-md transition-all border border-gray-100 h-full flex flex-col justify-between">
+                                        <div>
+                                            <div className="flex justify-center text-yellow-400 mb-4">
+                                                {[...Array(review.rating)].map((_, i) => <Star key={i} fill="currentColor" className="w-5 h-5" />)}
+                                            </div>
+                                            <p className="text-gray-600 italic mb-6">"{review.text}"</p>
+                                        </div>
+                                        <h4 className="font-bold text-gray-900 flex items-center justify-center gap-2">
+                                            <div className="w-8 h-8 rounded-full bg-cyan-100 text-cyan-700 flex items-center justify-center text-xs font-bold">
+                                                {review.name.charAt(0)}
+                                            </div>
+                                            {review.name}
+                                        </h4>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
-                    ))}
+                    </div>
+
+                    {/* Dots */}
+                    <div className="flex justify-center gap-2 mt-8">
+                        {Array.from({ length: REVIEWS.length - itemsPerPage + 1 }).map((_, idx) => (
+                            <button
+                                key={idx}
+                                onClick={() => setCurrentIndex(idx)}
+                                className={`h-2 rounded-full transition-all duration-300 ${currentIndex === idx ? "w-8 bg-cyan-500" : "w-2 bg-gray-300 hover:bg-gray-400"
+                                    }`}
+                            />
+                        ))}
+                    </div>
                 </div>
             </div>
         </section>
@@ -47,8 +125,14 @@ export function Agenda() {
 
     return (
         <section id="agenda" className="py-20 bg-gray-900 text-white relative overflow-hidden">
-            <div className="absolute -right-20 -top-20 w-96 h-96 bg-cyan-500/20 rounded-full blur-3xl"></div>
-            <div className="absolute -left-20 -bottom-20 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl"></div>
+            {/* Video Background */}
+            <div className="absolute inset-0 z-0">
+                <video autoPlay loop muted playsInline className="w-full h-full object-cover opacity-100 transition-all duration-700">
+                    <source src="/videos/taller-bigobike-60.mp4" type="video/mp4" />
+                </video>
+                {/* Gradient: Solid on left for text opacity, clear on right for video popping */}
+                <div className="absolute inset-0 bg-gradient-to-r from-gray-900/95 via-gray-900/60 to-transparent"></div>
+            </div>
 
             <div className="container mx-auto px-6 relative z-10 flex flex-col lg:flex-row items-center gap-12">
                 <div className="lg:w-1/2">
@@ -99,8 +183,8 @@ export function Agenda() {
                                         key={i}
                                         onClick={() => setSelectedDate(i)}
                                         className={`flex-shrink-0 w-16 h-20 rounded-xl flex flex-col items-center justify-center border-2 transition-all ${selectedDate === i
-                                                ? 'border-cyan-500 bg-cyan-50 text-cyan-700'
-                                                : 'border-gray-100 hover:border-gray-300'
+                                            ? 'border-cyan-500 bg-cyan-50 text-cyan-700'
+                                            : 'border-gray-100 hover:border-gray-300'
                                             }`}
                                     >
                                         <span className="text-xs font-bold uppercase">{date.toLocaleDateString('es-CL', { weekday: 'short' })}</span>

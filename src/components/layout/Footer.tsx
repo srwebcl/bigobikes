@@ -7,7 +7,7 @@ export default function Footer() {
             <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
                 {/* Brand */}
                 <div className="col-span-1 md:col-span-2">
-                    <h2 className="text-3xl font-black italic tracking-tighter mb-6">BIGO <span className="text-cyan-500">BIKE'S</span></h2>
+                    <img src="/images/logo.svg" alt="Bigo Bike's" className="h-14 w-auto mb-6" />
                     <p className="text-gray-400 max-w-sm mb-6">
                         Somos el taller líder en La Serena, especializados en suspensiones y mantenciones integrales. Pasión por el ciclismo y la mecánica de precisión.
                     </p>
