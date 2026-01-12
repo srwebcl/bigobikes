@@ -1,4 +1,11 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+
+# Taller Bigobike - Web
+
+Proyecto web desarrollado en Next.js.
+
+> **Nota Importante para Vercel:**
+> El proyecto se encuentra en la raíz del repositorio (`./`), no en la carpeta `web`.
+> Asegúrese de que la configuración "Root Directory" en Vercel esté vacía.
 
 ## Getting Started
 
